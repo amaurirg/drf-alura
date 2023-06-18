@@ -6,6 +6,12 @@ from escola.models import Aluno, Curso, Matricula
 class AlunoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aluno
+        fields = ["nome", "rg", "cpf", "data_nascimento"]
+
+
+class AlunoSerializerV2(serializers.ModelSerializer):
+    class Meta:
+        model = Aluno
         fields = "__all__"
 
 
@@ -18,7 +24,7 @@ class CursoSerializer(serializers.ModelSerializer):
 class MatriculaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Matricula
-        exclude = []    # traz todos os campos também
+        exclude = []  # traz todos os campos também
 
 
 class ListaMatriculasAlunoSerializer(serializers.ModelSerializer):
