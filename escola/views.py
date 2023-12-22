@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import viewsets, status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -5,9 +7,9 @@ from rest_framework.response import Response
 # from rest_framework.authentication import BasicAuthentication
 # from rest_framework.permissions import IsAuthenticated
 
-from escola.models import Aluno, Curso, Matricula
+from escola.models import Aluno, Curso, Matricula, Imagem
 from escola.serializer import AlunoSerializer, CursoSerializer, MatriculaSerializer, ListaMatriculasAlunoSerializer, \
-    ListaMatriculadosPorCursoSerializer, AlunoSerializerV2
+    ListaMatriculadosPorCursoSerializer, AlunoSerializerV2, ImagemSerializer
 
 
 class AlunosViewSet(viewsets.ModelViewSet):
@@ -25,6 +27,8 @@ class CursosViewSet(viewsets.ModelViewSet):
     """ Exibindo todos os cursos """
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
+    http_method_names = ["get", "post", "put", "path"]
+
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -42,6 +46,10 @@ class MatriculasViewSet(viewsets.ModelViewSet):
     serializer_class = MatriculaSerializer
     http_method_names = ["get", "post"]
 
+    @method_decorator(cache_page(40))
+    def dispatch(self, *args, **kwargs):
+        return super(MatriculasViewSet, self).dispatch(*args, **kwargs)
+
 
 class ListaMatriculasAluno(ListAPIView):
     """ Listando matrículas de um aluno """
@@ -57,3 +65,8 @@ class ListaMatriculadosPorCurso(ListAPIView):
         queryset = Matricula.objects.filter(curso_id=self.kwargs["pk"])
         return queryset
     serializer_class = ListaMatriculadosPorCursoSerializer
+
+
+class ImagemViewSet(viewsets.ModelViewSet):
+    queryset = Imagem.objects.all()
+    serializer_class = ImagemSerializer

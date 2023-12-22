@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
-from escola.models import Aluno, Curso, Matricula
+from escola.models import Aluno, Curso, Matricula, Imagem
 
 
 @admin.register(Aluno)
@@ -38,3 +38,9 @@ class SessionAdmin(admin.ModelAdmin):
         return user.username
 
     get_user.short_description = "Logged user"
+
+
+@admin.register(Imagem)
+class Imagens(admin.ModelAdmin):
+    list_display = ["id", "descricao", "foto"]
+    # list_display_links = ["id"]
